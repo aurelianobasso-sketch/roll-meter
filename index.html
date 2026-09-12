@@ -140,16 +140,12 @@ button{
         </div>
       </label>
 
-      <label>Original roll length
-        <div class="row">
-          <input id="length" inputmode="decimal" placeholder="620">
-          <select id="lenUnit">
-            <option value="m">m</option>
-            <option value="ft">ft</option>
-            <option value="yd">yd</option>
-          </select>
-        </div>
-      </label>
+     <label>Original roll length
+      <select id="length">
+        <option value="310">310 m</option>
+        <option value="620" selected>620 m</option>
+      </select>
+     </label> 
     </div>
 
     <button onclick="calculate()">Calculate remaining</button>
@@ -205,16 +201,18 @@ function calculate(){
 
   const fraction = (di*di-ci*ci)/(fi*fi-ci*ci);
   const remaining = L*fraction;
-  const unit = document.getElementById('lenUnit').value;
+  const unit = "m";
 
   document.getElementById('remaining').textContent = fmt(remaining)+" "+unit;
   document.getElementById('percent').textContent = fmt(fraction*100)+"% remaining";
   document.getElementById('used').textContent = fmt(L-remaining)+" "+unit+" used";
 
   localStorage.setItem("rollmeter", JSON.stringify({
-    c,d,f,L,
-    du1:diamUnit1.value,du2:diamUnit2.value,du3:diamUnit3.value,lu:lenUnit.value
-  }));
+  c,d,f,L,
+  du1:diamUnit1.value,
+  du2:diamUnit2.value,
+  du3:diamUnit3.value
+}));
 }
 
 function loadExample(){
@@ -223,7 +221,6 @@ function loadExample(){
   full.value="15.875";
   length.value="620";
   diamUnit1.value=diamUnit2.value=diamUnit3.value="in";
-  lenUnit.value="m";
   calculate();
 }
 function clearAll(){
@@ -235,10 +232,17 @@ window.addEventListener("load",()=>{
   try{
     const x=JSON.parse(localStorage.getItem("rollmeter"));
     if(x){
-      core.value=x.c; current.value=x.d; full.value=x.f; length.value=x.L;
-      diamUnit1.value=x.du1; diamUnit2.value=x.du2; diamUnit3.value=x.du3; lenUnit.value=x.lu;
-      calculate();
-    } else loadExample();
+  core.value=x.c;
+  current.value=x.d;
+  full.value=x.f;
+  length.value=x.L;
+
+  diamUnit1.value=x.du1;
+  diamUnit2.value=x.du2;
+  diamUnit3.value=x.du3;
+
+  calculate();
+} else loadExample();
   }catch(e){ loadExample(); }
 
   if("serviceWorker" in navigator){
